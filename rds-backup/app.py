@@ -47,7 +47,7 @@ def handler(event, context):
         month = start.strftime("%m")
         day = start.strftime("%d")
 
-        backup_dir = f"backup/{year}/{month}/{day}/{db_name}/"
+        backup_dir = f"/tmp/backup/{year}/{month}/{day}/{db_name}/"
         backup_full_path = f"{backup_dir}/{db_name}-{start_formatted}.sql.gz"
         s3_url = f"s3://{S3_BUCKET}/{year}/{month}/{day}/{db_name}/"
 
