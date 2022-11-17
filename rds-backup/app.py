@@ -1,6 +1,4 @@
 import json
-import sys
-import os
 import subprocess
 import pathlib
 from datetime import datetime
@@ -32,13 +30,13 @@ def get_secrets():
 
 
 def handler(event, context):
-    S3_BUCKET = os.getenv("S3_BUCKET", "lambda-rds-to-s3-backup-s3-bucket")
+    S3_BUCKET = "lambda-rds-to-s3-backup-s3-bucket"
     timezone = pytz.timezone("Asia/Kolkata")
 
     host, port, username, password = get_secrets()
 
     command = """
-            export PGPASSWORD=%s; psql -h %s -U %s -p %s -t -A -c "SELECT datname FROM pg_database WHERE datname <> ALL ('{template0,template1,postgres}')"
+            export PGPASSWORD=%s; psql -h %s -U %s -p %s -t -A -c "SELECT datname FROM pg_database WHERE datname <> ALL ('{rdsadmin,postgres}')"
         """ % (
         password,
         host,

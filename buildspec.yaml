@@ -18,7 +18,7 @@ phases:
     commands:
       - echo Build started on `date`
       - echo Building the Docker image...
-      - cd rds-backup && echo "S3_BUCKET=lambda-rds-to-s3-backup-s3-bucket" > .env && docker build -t $REPOSITORY_URI:latest .
+      - cd rds-backup && docker build -t $REPOSITORY_URI:latest .
       - cd ..
   post_build:
     commands:

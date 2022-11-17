@@ -24,8 +24,8 @@ execOnNotExist() {
     echo -e "\n\n"
     echo "S3 ARN: "$s3arnid
 
-    # Create event rule to schedule a cron expression every 12 hours
-    rulearnid=$(aws events put-rule --name "$RULE_NAME" --description "Event rule to schedule a cron expression every 12 hours" --schedule-expression 'rate(12 hours)' --output text | grep "arn" | tr -d '"')
+    # Create event rule to schedule a cron expression every 2 hours
+    rulearnid=$(aws events put-rule --name "$RULE_NAME" --description "Event rule to schedule a cron expression every 2 hours" --schedule-expression 'rate(2 hours)' --output text | grep "arn" | tr -d '"')
     echo -e "\n\n"
     echo "Event Rule ARN: "$rulearnid
 
