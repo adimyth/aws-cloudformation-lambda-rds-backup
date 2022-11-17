@@ -36,7 +36,7 @@ def handler(event, context):
     host, port, username, password = get_secrets()
 
     command = """
-            export PGPASSWORD=%s; psql -h %s -U %s -p %s -t -A -c "SELECT datname FROM pg_database WHERE datname <> ALL ('{rdsadmin,postgres}')"
+            export PGPASSWORD=%s; psql -h %s -U %s -p %s -t -A -c "SELECT datname FROM pg_database WHERE datname <> ALL ('{rdsadmin,postgres,template0,template1}')"
         """ % (
         password,
         host,

@@ -15,7 +15,7 @@ execOnExist() {
 
 execOnNotExist() {
     # Create lambda function
-    lambdarnid=$(aws lambda create-function --function-name "$FUNCTION_NAME" --role "$LAMBDA_ROLE" --code "ImageUri=$IMAGE_URI" --package-type Image --region "$AWS_REGION" --vpc-config "SubnetIds=subnet-093ddff71b52b991d,subnet-0e077ea1638249135,SecurityGroupIds=sg-06ef17860bccbda25,sg-0ab932b6a62e816b2" --timeout 30 --memory-size 1024 --publish | jq --raw-output '.FunctionArn')
+    lambdarnid=$(aws lambda create-function --function-name "$FUNCTION_NAME" --role "$LAMBDA_ROLE" --code "ImageUri=$IMAGE_URI" --package-type Image --region "$AWS_REGION" --vpc-config "SubnetIds=subnet-093ddff71b52b991d,subnet-0e077ea1638249135,SecurityGroupIds=sg-06ef17860bccbda25,sg-0ab932b6a62e816b2" --timeout 600 --memory-size 1024 --publish | jq --raw-output '.FunctionArn')
     echo -e "\n\n"
     echo "Lambda Function ARN: "$lambdarnid
 
