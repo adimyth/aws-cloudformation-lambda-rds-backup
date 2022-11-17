@@ -1,4 +1,5 @@
 import json
+import sys
 import os
 import subprocess
 import pathlib
@@ -36,7 +37,19 @@ def handler(event, context):
 
     host, port, username, password = get_secrets()
 
-    for db_name in event["DATABASES"]:
+    command = """
+            export PGPASSWORD=%s; psql -h %s -U %s -p %s -t -A -c "SELECT datname FROM pg_database WHERE datname <> ALL ('{template0,template1,postgres}')"
+        """ % (
+        password,
+        host,
+        username,
+        port,
+    )
+    p = subprocess.run(command, shell=True, capture_output=True, text=True)
+    databases = p.stdout.split("\n")
+    databases.remove("")
+
+    for db_name in databases:
         start = datetime.now(timezone)
         start_formatted = start.strftime("%Y-%m-%d-%H-%M-%S")
         print("==================================")
