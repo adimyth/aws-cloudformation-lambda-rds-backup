@@ -13,6 +13,7 @@ phases:
       - REPOSITORY_URI="223865955266.dkr.ecr.ap-south-1.amazonaws.com/lambda-rds-to-s3-backup"
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
       - IMAGE_TAG="$COMMIT_HASH"
+      - echo $COMMIT_HASH
   build:
     commands:
       - echo Build started on `date`
