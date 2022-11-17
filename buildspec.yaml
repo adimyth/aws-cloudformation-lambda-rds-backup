@@ -1,0 +1,28 @@
+version: 0.2
+phases:
+  install:
+    runtime-versions:
+      docker: 19
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - aws --version
+      - aws ecr describe-repositories --repository-names "lambda-rds-to-s3-backup" || aws ecr create-repository --repository-name "lambda-rds-to-s3-backup"
+      - LAMBDA_ROLE="arn:aws:iam::223865955266:role/service-role/core-service-api-role-mjb8zo7r"
+      - $(aws ecr get-login --region ap-south-1 --no-include-email)
+      - REPOSITORY_URI="223865955266.dkr.ecr.ap-south-1.amazonaws.com/lambda-rds-to-s3-backup"
+      - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+      - IMAGE_TAG="$COMMIT_HASH"
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Building the Docker image...
+      - cd rds-backup && echo "S3_BUCKET=lambda-rds-to-s3-backup-s3-bucket" > .env && docker build -t $REPOSITORY_URI:latest .
+      - cd ..
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - echo Pushing the Docker images...
+      - docker push $REPOSITORY_URI:latest
+      - IMAGE_URI="$REPOSITORY_URI:latest"
+      - bash pipeline/lambda-deploy.sh
