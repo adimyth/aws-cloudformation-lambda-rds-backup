@@ -33,7 +33,7 @@ execOnNotExist() {
     aws lambda add-permission --function-name "$FUNCTION_NAME" --statement-id "$EVENT_NAME" --action 'lambda:InvokeFunction' --principal events.amazonaws.com --source-arn arn:aws:events:ap-south-1:223865955266:rule/"$RULE_NAME"
 
     # Attach event rule to lambda as trigger event
-    aws events put-targets --rule "$RULE_NAME" --targets '{"Id" : "1", "Arn": "$lambdarnid"}'
+    aws events put-targets --rule "$RULE_NAME" --targets "Id"="1","Arn"="$lambdarnid"
 }
 
 if [[ $lambdaExt ]]; then
