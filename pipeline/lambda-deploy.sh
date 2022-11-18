@@ -23,10 +23,11 @@ execOnNotExist() {
     s3arnid=$(aws s3 mb s3://"$BUCKET_NAME" --output text | grep "arn" | tr -d '"')
     echo -e "\n\n"
     echo "S3 ARN: "$s3arnid
-    # Set lifecycle configuration policy
-    aws s3api put-bucket-lifecycle-configuration \
-        --bucket $BUCKET_NAME \
-        --lifecycle-configuration file://pipeline/lifecycle.json
+
+    # TODO: Set lifecycle configuration policy
+    # aws s3api put-bucket-lifecycle-configuration \
+    #     --bucket $BUCKET_NAME \
+    #     --lifecycle-configuration file://pipeline/lifecycle.json
 
     # Create event rule to schedule a cron expression every 2 hours
     rulearnid=$(aws events put-rule --name "$RULE_NAME" --description "Event rule to schedule a cron expression every 2 hours" --schedule-expression 'rate(2 hours)' --output text | grep "arn" | tr -d '"')

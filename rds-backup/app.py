@@ -30,7 +30,7 @@ def get_secrets():
 
 
 def handler(event, context):
-    S3_BUCKET = "lambda-rds-to-s3-backup-s3-bucket"
+    S3_BUCKET = "lambda-rds-to-s3-backup-s3-bucket-prod"
     timezone = pytz.timezone("Asia/Kolkata")
 
     host, port, username, password = get_secrets()
