@@ -15,7 +15,7 @@ execOnExist() {
 
 execOnNotExist() {
     # Create lambda function
-    lambdarnid=$(aws lambda create-function --function-name "$FUNCTION_NAME" --role "$LAMBDA_ROLE" --code "ImageUri=$IMAGE_URI" --package-type Image --region "$AWS_REGION" --vpc-config "SubnetIds=subnet-093ddff71b52b991d,subnet-0e077ea1638249135,SecurityGroupIds=sg-06ef17860bccbda25,sg-0ab932b6a62e816b2" --timeout 600 --memory-size 1024 --publish | jq --raw-output '.FunctionArn')
+    lambdarnid=$(aws lambda create-function --function-name "$FUNCTION_NAME" --role "$LAMBDA_ROLE" --code "ImageUri=$IMAGE_URI" --package-type Image --region "$AWS_REGION" --vpc-config "SubnetIds=subnet-0f978e7c0015d973c,subnet-00623d03409895cc5,SecurityGroupIds=sg-sg-0accebb25bcf0f386" --timeout 600 --memory-size 1024 --publish | jq --raw-output '.FunctionArn')
     echo -e "\n\n"
     echo "Lambda Function ARN: "$lambdarnid
 
@@ -23,6 +23,10 @@ execOnNotExist() {
     s3arnid=$(aws s3 mb s3://"$BUCKET_NAME" --output text | grep "arn" | tr -d '"')
     echo -e "\n\n"
     echo "S3 ARN: "$s3arnid
+    # Set lifecycle configuration policy
+    aws s3api put-bucket-lifecycle-configuration \
+        --bucket $BUCKET_NAME \
+        --lifecycle-configuration file://lifecycle.json
 
     # Create event rule to schedule a cron expression every 2 hours
     rulearnid=$(aws events put-rule --name "$RULE_NAME" --description "Event rule to schedule a cron expression every 2 hours" --schedule-expression 'rate(2 hours)' --output text | grep "arn" | tr -d '"')
