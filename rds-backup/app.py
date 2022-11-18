@@ -9,7 +9,7 @@ from botocore.exceptions import ClientError
 
 
 def get_secrets():
-    secret_name = "sharpsell-dev-shared"
+    secret_name = "Sharpsell-Prod-Shared"
     region_name = "ap-south-1"
 
     # Create a Secrets Manager client
