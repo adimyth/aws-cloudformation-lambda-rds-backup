@@ -8,8 +8,8 @@ import pytz
 from botocore.exceptions import ClientError
 
 
-def get_secrets():
-    secret_name = "Sharpsell-Prod-Shared"
+def get_secrets(secret_name):
+    
     region_name = "ap-south-1"
 
     # Create a Secrets Manager client
@@ -28,13 +28,7 @@ def get_secrets():
     password = secret[username]
     return host, port, username, password
 
-
-def handler(event, context):
-    S3_BUCKET = "lambda-rds-to-s3-backup-s3-bucket-prod"
-    timezone = pytz.timezone("Asia/Kolkata")
-
-    host, port, username, password = get_secrets()
-
+def initiate_backup(host, port, username, password, S3_BUCKET):
     command = """
             export PGPASSWORD=%s; psql -h %s -U %s -p %s -t -A -c "SELECT datname FROM pg_database WHERE datname <> ALL ('{rdsadmin,postgres,template0,template1}')"
         """ % (
@@ -46,6 +40,10 @@ def handler(event, context):
     p = subprocess.run(command, shell=True, capture_output=True, text=True)
     databases = p.stdout.split("\n")
     databases.remove("")
+
+    print("==================================")
+    print(f"Starting to Export databases in {host}")
+    print("==================================")
 
     for db_name in databases:
         start = datetime.now(timezone)
@@ -82,3 +80,12 @@ def handler(event, context):
 
         end = datetime.now(timezone)
         print("Time taken: %s\n\n" % (end - start))
+
+def handler(event, context):
+    S3_BUCKET = "lambda-rds-to-s3-backup-s3-bucket-prod"
+    timezone = pytz.timezone("Asia/Kolkata")
+
+    host, port, username, password = get_secrets("Sharpsell-Prod-Shared")
+    initiate_backup(host, port, username, password, S3_BUCKET)
+    host, port, username, password = get_secrets("sharpshell-IDFC-shared")
+    initiate_backup(host, port, username, password, S3_BUCKET)
